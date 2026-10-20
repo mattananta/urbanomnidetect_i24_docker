@@ -1,0 +1,33 @@
+services:
+  i24-eval:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UOD_REF: ${UOD_REF:-main}
+    image: urbanomnidetect-i24-eval:local
+    volumes:
+      - ${I24_CACHE_DIR:-./i24-cache}:/data/i24-cache:ro
+      - ${CHECKPOINT_DIR:-./checkpoints}:/models:ro
+      - ${OUTPUT_DIR:-./outputs}:/outputs
+    command:
+      - --cache
+      - /data/i24-cache
+      - --scene
+      - ${SCENE:-1}
+      - --camera
+      - ${CAMERA:-p1c1}
+      - --model
+      - /models/${MODEL_FILE:-model.pt}
+      - --uod-version
+      - ${UOD_VERSION:-v1}
+      - --imgsz
+      - ${IMGSZ:-960}
+      - --conf
+      - ${CONF:-0.1}
+      - --iou
+      - ${IOU_THRESHOLDS:-0.25,0.5,0.7}
+      - --device
+      - ${DEVICE:-cpu}
+      - --report-csv
+      - /outputs/i24_urbanomnidetect_eval.csv
